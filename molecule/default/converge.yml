@@ -20,6 +20,6 @@
           when: ansible_os_family == "Debian"
 
   roles:
-    - role: postgresql
+    - role: ansible-postgresql
       tags:
         - postgresql
