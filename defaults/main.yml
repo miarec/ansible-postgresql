@@ -148,8 +148,9 @@ postgresql_ssl_dh_params_file: ""                                       # (>= 10
 postgresql_ssl_passphrase_command: ""                                   # (>= 11)
 postgresql_ssl_passphrase_command_supports_reload: off                  # (>= 11)
 postgresql_ssl_renegotiation_limit: 512MB                               # amount of data between renegotiations
-postgresql_ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"        # (>= 9.2)
-postgresql_ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"       # (>= 9.2)
+postgresql_ssl_dir: "/etc/ssl/psql"
+postgresql_ssl_cert_file: "{{ postgresql_ssl_dir }}/ssl-cert-snakeoil.pem"        # (>= 9.2)
+postgresql_ssl_key_file: "{{ postgresql_ssl_dir }}/ssl-cert-snakeoil.key"       # (>= 9.2)
 postgresql_ssl_ca_file: ""                                              # (>= 9.2)
 postgresql_ssl_crl_file: ""                                             # (>= 9.2)
 postgresql_password_encryption: on
