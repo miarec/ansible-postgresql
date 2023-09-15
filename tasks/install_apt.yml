@@ -1,4 +1,3 @@
----
 # file: postgresql/tasks/install_apt.yml
 
 # The standard ca-certs are needed because  without them apt_key will fail to
@@ -31,7 +30,7 @@
   apt:
     pkg: "{{ postgresql_apt_py2_dependencies }}"
     state: present
-    update_cache: true
+    update_cache: yes
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   when: ansible_python.version.major == 2
 
@@ -50,7 +49,7 @@
       - "postgresql-client-{{postgresql_version}}"
       - "postgresql-contrib-{{postgresql_version}}"
     state: present
-    update_cache: true
+    update_cache: yes
     default_release: "{{postgresql_default_release | default(ansible_distribution_release + '-pgdg')}}"
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   environment: "{{postgresql_env}}"
@@ -59,7 +58,7 @@
   apt:
     name: pgtune
     state: present
-    update_cache: true
+    update_cache: yes
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   environment: "{{postgresql_env}}"
   when: postgresql_pgtune

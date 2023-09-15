@@ -1,4 +1,3 @@
----
 # file: postgresql/tasks/extensions.yml
 
 - import_tasks: extensions/contrib.yml

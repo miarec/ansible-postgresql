@@ -1,4 +1,3 @@
----
 # file: postgresql/tasks/install_yum.yml
 
 # The standard ca-certs are needed because  without them yum will fail to

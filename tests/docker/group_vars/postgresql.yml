@@ -11,11 +11,11 @@ postgresql_databases:
 postgresql_users:
   - name: baz
     pass: md51a1dc91c907325c69271ddf0c944bc72
-    encrypted: true
+    encrypted: yes
 
   - name: zab
     pass: md51a1dc91c907325c69271ddf0c944bc72
-    encrypted: true
+    encrypted: yes
 
   - name: zabaz
 
@@ -39,6 +39,6 @@ postgresql_ext_install_postgis: false
 postgresql_database_extensions:
   - db: foobar
     extensions:
-      - adminpack
-      - pgcrypto
-      - unaccent
+    - adminpack
+    - pgcrypto
+    - unaccent
