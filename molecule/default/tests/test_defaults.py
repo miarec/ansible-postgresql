@@ -4,16 +4,17 @@ import testinfra.utils.ansible_runner
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
 
+postgresql_version = os.environ.get('POSTGRESQL_VERSION')
 
 def test_directories(host):
     if host.system_info.distribution == "ubuntu":
         dirs = [
-            "/etc/postgresql/12/main",
+            "/etc/postgresql/{}/main".format(postgresql_version),
             "/var/run/postgresql"
         ]
     if host.system_info.distribution == "centos":
         dirs = [
-            "/etc/postgresql/12/data",
+            "/etc/postgresql/{}/data".format(postgresql_version),
             "/var/run/postgresql"
         ]
     for dir in dirs:
@@ -24,15 +25,15 @@ def test_directories(host):
 def test_files(host):
     if host.system_info.distribution == "ubuntu":
         files = [
-            "/etc/postgresql/12/main/pg_hba.conf",
-            "/etc/postgresql/12/main/pg_ident.conf",
-            "/var/run/postgresql/12-main.pid"
+            "/etc/postgresql/{}/main/pg_hba.conf".format(postgresql_version),
+            "/etc/postgresql/{}/main/pg_ident.conf".format(postgresql_version),
+            "/var/run/postgresql/{}-main.pid".format(postgresql_version)
         ]
     if host.system_info.distribution == "centos":
         files = [
-            "/etc/postgresql/12/data/pg_hba.conf",
-            "/etc/postgresql/12/data/pg_ident.conf",
-            "/var/run/postgresql/12-data.pid"
+            "/etc/postgresql/{}/data/pg_hba.conf".format(postgresql_version),
+            "/etc/postgresql/{}/data/pg_ident.conf".format(postgresql_version),
+            "/var/run/postgresql/{}-data.pid".format(postgresql_version)
         ]
 
     for file in files:
@@ -44,7 +45,7 @@ def test_service(host):
     if host.system_info.distribution == "ubuntu":
         s = host.service("postgresql")
     if host.system_info.distribution == "centos":
-        s = host.service("postgresql-12")
+        s = host.service("postgresql-{}".format(postgresql_version))
     assert s.is_enabled
     assert s.is_running
 

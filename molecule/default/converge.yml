@@ -3,6 +3,9 @@
   hosts: all
   become: true
 
+  vars:
+    postgresql_version: "{{ lookup('env', 'POSTGRESQL_VERSION')|default('12') }}"
+
   pre_tasks:
     - name: Install prerequisites
       block:
