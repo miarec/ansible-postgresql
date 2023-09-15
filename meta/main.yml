@@ -1,4 +1,5 @@
----
+# file: postgresql/meta/main.yml
+
 galaxy_info:
   author: miarec
   description: Deploy Specific PostgreSQL version

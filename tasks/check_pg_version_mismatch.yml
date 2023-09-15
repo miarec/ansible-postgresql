@@ -1,4 +1,3 @@
----
 # file: postgresql/tasks/check_pg_version_mismatch.yml
 
 # Check binary version
@@ -25,3 +24,8 @@
 
 # If versions do not match, then restart PostgreSQL
 - name: PostgreSQL | Verify binary and database versions match
+  debug:
+    msg: "WARNING: Binary ({{ postgresql_binary_version.stdout }}) and Database ({{ postgresql_database_version.stdout }}) version mismatch. Restart required!"
+  when: postgresql_binary_version.stdout != postgresql_database_version.stdout
+  changed_when: postgresql_binary_version.stdout != postgresql_database_version.stdout
+  notify: restart postgresql
