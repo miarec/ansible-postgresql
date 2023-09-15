@@ -34,7 +34,7 @@ jobs:
           - ubuntu2004
           - ubuntu2204
           - centos7
-        postgresql_version: [11, 12]
+        version: [10, 11, 12]
 
     steps:
       - name: Check out the Repository
@@ -57,4 +57,4 @@ jobs:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.distro }}
-          POSTGRESQL_VERSION: ${{ matrix.postgresql_version }}
+          POSTGRESQL_VERSION: ${{ matrix.version }}
