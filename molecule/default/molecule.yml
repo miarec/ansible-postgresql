@@ -17,6 +17,8 @@ provisioner:
   name: ansible
   playbooks:
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}
+  env:
+    MOLECULE_POSTGRESQL_VERSION: '12'
 verifier:
   name: testinfra
   options:
