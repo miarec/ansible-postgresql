@@ -4,7 +4,7 @@ import testinfra.utils.ansible_runner
 testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
     os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
 
-postgresql_version = os.environ.get('POSTGRESQL_VERSION')
+postgresql_version = os.environ.get('MOLECULE_POSTGRESQL_VERSION')
 
 def test_directories(host):
     if host.system_info.distribution == "ubuntu":
