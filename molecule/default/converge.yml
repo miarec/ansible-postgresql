@@ -4,11 +4,9 @@
   become: true
 
   vars:
-    postgresql_version: "{{ lookup('env', 'MOLECULE_POSTGRESQL_VERSION') }}"
+    postgresql_version: "{{ lookup('env', 'POSTGRESQL_VERSION') }}"
 
   pre_tasks:
-    - debug: var=postgresql_version
-
     - name: Install prerequisites
       block:
         - name: Update apt cache
