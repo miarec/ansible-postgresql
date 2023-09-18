@@ -16,3 +16,4 @@ rules:
   comments: disable
   empty-lines: disable
   commas: disable
+  trailing-spaces: disable
