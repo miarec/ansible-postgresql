@@ -124,6 +124,8 @@
     mode: 0700
     state: directory
 
+- debug: var=postgresql_ssl
+
 - name: PostgreSQL | Update configuration - pt. 1 (pg_hba.conf)
   template:
     src: pg_hba.conf.j2

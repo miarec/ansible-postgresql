@@ -1,4 +1,5 @@
 # file: postgresql/tasks/main.yml
+- debug: var=postgresql_ssl
 
 - include_vars: "{{ item }}"
   with_first_found:
