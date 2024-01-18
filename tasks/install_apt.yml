@@ -8,11 +8,19 @@
     state: present
 
 - name: PostgreSQL | Add PostgreSQL repository apt-key | apt
-  apt_key:
-    id: "{{ postgresql_apt_key_id }}"
+  get_url:
     url: "{{ postgresql_apt_key_url }}"
-    state: present
+    dest: "/etc/apt/trusted.gpg.d/{{ postgresql_apt_key_id }}.asc"
+    mode: '0644'
+    force: true
   when: postgresql_apt_key_url and postgresql_apt_key_id and postgresql_install_repository
+
+# - name: PostgreSQL | Add PostgreSQL repository apt-key | apt
+#   apt_key:
+#     id: "{{ postgresql_apt_key_id }}"
+#     url: "{{ postgresql_apt_key_url }}"
+#     state: present
+#   when: postgresql_apt_key_url and postgresql_apt_key_id and postgresql_install_repository
 
 - name: PostgreSQL | Add PostgreSQL repository | apt
   apt_repository:
