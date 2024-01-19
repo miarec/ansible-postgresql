@@ -6,9 +6,6 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 
 postgresql_version = os.environ.get('POSTGRESQL_VERSION')
 
-def test_test(host):
-    print (host.system_info.distribution)
-
 def test_directories(host):
     if host.system_info.distribution == "ubuntu":
         dirs = [

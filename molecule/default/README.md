@@ -16,5 +16,6 @@ MOLECULE_DISTRO=centos7 MOLECULE_POSTGRESQL_VERSION=12 molecule test
     - `ubuntu2204`
     - `ubuntu2004`
     - `rockylinux8`
+    - `rockylinux9`
     - `centos7`
  - `MOLECULE_POSTGRESQL_VERSION` defines variable `postgresql_version`, default `12`
