@@ -21,11 +21,11 @@
   tags: [postgresql, postgresql-install]
 
 - import_tasks: install_rhel.yml
-  when: (ansible_pkg_mgr == "yum" or ansible_pkg_mgr == "dnf") and (ansible_distribution == "RedHat" or ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux" or ansible_distribution == "Rocky")
-  tags: [postgresql, postgresql-install]
+  # when: (ansible_pkg_mgr == "yum" or ansible_pkg_mgr == "dnf") and (ansible_distribution == "RedHat" or ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux" or ansible_distribution == "Rocky")
+  when: ansible_os_family == "RedHat" and ansible_distribution != "Fedora"
 
 - import_tasks: install_fedora.yml
-  when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
+  when: ansible_distribution == "Fedora"
   tags: [postgresql, postgresql-install]
 
 - import_tasks: extensions.yml
