@@ -24,5 +24,4 @@ postgresql_packages:
   - python-psycopg2
   - python-pycurl
   - glibc-common
-  - epel-release
   - libselinux-python

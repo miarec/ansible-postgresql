@@ -5,6 +5,7 @@
 
   vars:
     postgresql_version: "{{ lookup('env', 'POSTGRESQL_VERSION') }}"
+    postgresql_ext_install_dev_headers: true
 
   pre_tasks:
     - name: Install prerequisites

@@ -13,6 +13,32 @@ platforms:
     privileged: true
     pre_build_image: true
 
+# platforms:
+#   - name: instance
+#     image: ubi7/ubi
+#     registry:
+#       url: registry.redhat.io
+#       # url: registry.access.redhat.com
+#       credentials:
+#         username: 17632978|molecule-testing
+#         password: eyJhbGciOiJSUzUxMiJ9.eyJzdWIiOiI0YzY3OTc3OTg0MzM0Mzg0ODk1YzFkMTU1YWYzN2M1ZCJ9.o55cyY_2Y5M8EomynS4kN9x9OWwvAiN0lCsFucGrsCKpU1kBPPeQxX3mw0ktWr7O8MRyrzYK82eBABaqOw7RO5Mv9DM_BGUOSlOIn-oHq1NDUK4fIEbqRWZOnCLTkVvKAOxw2U89qvhz1ixtvodF0QbpLwRTKoPr4dxsDCdjUrrD1-p-UwIhC9_KQJS4BW5DCnBFteVx84-l1erFcppy8Uw_h8krqn85wHQlhOb0WY59OKnNySUwkrKz2SqzWmmrYT30i8JKvz_ARsT7iILLoLBlUia4Ly_gv-ofKtRxinm63dWHLgE4nFC1kIrQmEL8yF5eeC8M30A5_fPfyugq6nrk_kDi3jQI8hkQLx_K-3a7WsFEWtjES1ji2Km4e8LG3D6v_4sV4v8ysBrzXRhs2nUGZcTEhKF26t92j5BGOXmgahARBEF69Ksyw5TO3yS9sbyLX36t4wbuYQCrT5YmtUiMg7skhkwP-iuISoRdiS08LSTwd1fyjogR-y4N8433_xuhF8af1HNPfTvVmyXFWHqk-vUwIL1p8BioO5POPCL44UsNCIaG3jWuMBmOKgshttEI2Ger-3CtTFIsEVhYi3fpDb5pmc2cFll85QIGG2-hRs__JyUvNDpluOXlzjWan7BuY1Tn8FKL7d0y9ogUgU4pu4h26392V2N9YtZiJrU
+#     # command: ${MOLECULE_DOCKER_COMMAND:-""}
+#     volumes:
+#       - /sys/fs/cgroup:/sys/fs/cgroup:rw
+#     cgroupns_mode: host
+#     privileged: true
+#     # pre_build_image: true
+
+
+# platforms:
+#   - name: instance
+#     image: ${MOLECULE_DISTRO:-redhat/ubi8-init:latest}
+#     command: /sbin/init
+#     volumes:
+#       - /sys/fs/cgroup:/sys/fs/cgroup:rw
+#     cgroupns_mode: host
+#     privileged: true
+
 provisioner:
   name: ansible
   playbooks:
