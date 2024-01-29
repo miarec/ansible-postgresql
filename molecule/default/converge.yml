@@ -8,6 +8,14 @@
     postgresql_ext_install_dev_headers: true
 
   pre_tasks:
+    # UBI 7 repos do not include llvm-toolset
+    - name: Skip Dev Headers Extension on RHEL7
+      set_fact:
+        postgresql_ext_install_dev_headers: false
+      when:
+        - ansible_distribution == "RedHat"
+        - ansible_distribution_major_version == "7"
+
     - name: Install prerequisites
       block:
         - name: Update apt cache
