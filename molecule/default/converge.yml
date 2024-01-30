@@ -29,8 +29,6 @@
           changed_when: false
           when: ansible_os_family == "Debian"
 
-    - debug: var=postgresql_ext_install_dev_headers
-
   roles:
     - role: ansible-postgresql
       tags:
