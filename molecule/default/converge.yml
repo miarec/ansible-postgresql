@@ -9,14 +9,16 @@
 
   pre_tasks:
     # UBI 7 repos do not include llvm-toolset
-    # UBI 8 is missing perl-IPC-Run package, This would be in codeready-builder-for-rhel-8-x86_64-rpms
-    # this is not in UBI, this is required for postgresqlXX-devel
-    - name: Skip Dev Headers Extension on RHEL7 and 8
+
+    # UBI 8 and 9 are missing `perl-IPC-Run` package,
+    # RHEL8 and 9. This would be in repo `codeready-builder-for-rhel-X-x86_64-rpms`
+    # UBI equivilant does not include `perl-IPC-run`, this is required for postgresqlXX-devel
+    - name: Skip Dev Headers Extension on RHEL 7+
       set_fact:
         postgresql_ext_install_dev_headers: false
       when:
         - ansible_distribution == "RedHat"
-        - ansible_distribution_major_version in ['7', '8']
+        - ansible_distribution_major_version >= "7"
 
     - name: Install prerequisites
       block:
