@@ -22,7 +22,7 @@
   when:
     - ansible_distribution == "CentOS"
 
-- name: PostgreSQL | Extensions | Install Additonal Repositories | RockyLinux8
+- name: PostgreSQL | Extensions | Install Additonal Repositories | RockyLinux
   block:
 
   - name: PostgreSQL | Extensions | Install EPEL | RockyLinux
@@ -32,18 +32,25 @@
     with_items:
       - epel-release
 
-  - name: PostgreSQL | Extensions | Check for powertools | RockyLinux
+  - name: PostgreSQL | Extensions | Check for enabled repos | RockyLinux
     command: yum repolist
     changed_when: false
     register: _yum_repolist
 
-  - name: PostgreSQL | Extensions | Enable powertools | RockyLinux
+  - name: PostgreSQL | Extensions | Enable powertools | RockyLinux 8
     command: yum -y config-manager --set-enabled powertools
-    when: "'powertools' not in _yum_repolist.stdout"
+    when:
+       - "'powertools' not in _yum_repolist.stdout"
+       - ansible_distribution_major_version == "8"
+
+  - name: PostgreSQL | Extensions | Enable crb | RockyLinux 9
+    command: yum -y config-manager --set-enabled crb
+    when:
+       - "'crb' not in _yum_repolist.stdout"
+       - ansible_distribution_major_version == "9"
 
   when:
     - ansible_distribution == "Rocky"
-    - ansible_distribution_major_version == "8"
 
 - name: PostgreSQL | Extensions | Make sure the development headers are installed | RedHat
   yum:
