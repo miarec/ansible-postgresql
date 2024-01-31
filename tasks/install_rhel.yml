@@ -19,6 +19,14 @@
            enabled: yes
         when: postgresql_install_repository
 
+      - name: PostgreSQL | Add EPEL repository | Centos7 - PostgreSQL 15
+        yum:
+          name: epel-release
+          state: present
+        when:
+          - ansible_distribution == "CentOS"
+          - postgresql_version == "15"
+
       # When module postgresql is enabled, all packages that has the same name
       # with modular packages are excluded from all repositories
       # Reference: https://bugzilla.redhat.com/show_bug.cgi?id=1718201
