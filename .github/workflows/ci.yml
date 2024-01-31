@@ -39,7 +39,9 @@ jobs:
         exclude:
           # RHEL7 cannot install postgresl 14 and 15
           - distro: rhel7
-            version: [14, 15]
+            version: 14
+          - distro: rhel7
+            version: 15
 
     steps:
       - name: Check out the Repository
