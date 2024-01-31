@@ -32,6 +32,9 @@ jobs:
           - centos7
           - rockylinux8
           - rockylinux9
+          - rhel7
+          - rhel8
+          - rhel9
         version: [12, 13, 14, 15]
 
     steps:
