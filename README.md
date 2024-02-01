@@ -124,3 +124,6 @@ If you want to toy with the test play, see [tests/playbook.yml](./tests/playbook
 If you are contributing, please first test your changes within the vagrant environment, (using the targeted distribution), and if possible, ensure your change is covered in the tests found in [.travis.yml](./.travis.yml)
 
 
+#### License
+
+Licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
