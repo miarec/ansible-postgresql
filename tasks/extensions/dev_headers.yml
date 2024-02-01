@@ -32,8 +32,9 @@
 
 - name: PostgreSQL | Extensions | Install Additonal Repositories | RedHat
   package:
-    name: "{{ _redhat_additonal_repos }}"
+    name: "{{ _redhat_additonal_repos | default ([]) }}"
     state: present
+  when: ansible_os_family == "RedHat"
 
 - name: PostgreSQL | Extensions | Define enablerepo baded on Version | RockyLinux
   block:
