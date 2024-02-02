@@ -10,15 +10,100 @@
   pre_tasks:
     # UBI 7 repos do not include llvm-toolset
 
-    # UBI 8 and 9 are missing `perl-IPC-Run` package,
-    # RHEL8 and 9. This would be in repo `codeready-builder-for-rhel-X-x86_64-rpms`
-    # UBI equivilant does not include `perl-IPC-run`, this is required for postgresqlXX-devel
-    - name: Skip Dev Headers Extension on RHEL 7+
+
+    - name: Skip Dev Headers Extension on RHEL 7
       set_fact:
         postgresql_ext_install_dev_headers: false
       when:
         - ansible_distribution == "RedHat"
-        - ansible_distribution_major_version >= "7"
+        - ansible_distribution_major_version == "7"
+
+
+    # UBI 8/9 repositories are missing `perl-IPC-Run` package,
+    # RHEL 8/9. This would be in repo `codeready-builder-for-rhel-X-x86_64-rpms`
+    # UBI equivilant does not include `perl-IPC-run`, this is required for postgresqlXX-devel
+
+    - name: Install 'perl-IPC-Run' from CentOS Repositories | RHEL 8+
+      block:
+
+      - set_fact:
+          _tmp_repo_name: powertools
+          _tmp_repo_url: http://mirror.centos.org/centos/8-stream/PowerTools/x86_64/os/
+        when: ansible_distribution_major_version == "8"
+
+      - set_fact:
+          _tmp_repo_name: crb
+          _tmp_repo_url: https://mirror.stream.centos.org/9-stream/CRB/x86_64/os/
+        when: ansible_distribution_major_version == "9"
+
+      - name: Add {{ _tmp_repo_name }} Repository | RHEL 8+
+        yum_repository:
+            name: "{{ _tmp_repo_name }}"
+            description: "Centos8 - {{ _tmp_repo_name }}"
+            baseurl: "{{ _tmp_repo_url }}"
+            enabled: false
+
+      - name: Install perl-IPC-Run package | RHEL 8+
+        yum:
+          name: perl-IPC-Run
+          state: present
+          enablerepo: "{{ _tmp_repo_name }}"
+          disable_gpg_check: true
+
+      when:
+        - ansible_distribution == "RedHat"
+        - ansible_distribution_major_version >= "8"
+
+    # - name: Add powertools | RHEL 8
+    #   yum_repository:
+    #       name: powertools
+    #       description: Centos8 - Powertools
+    #       baseurl: "http://mirror.centos.org/centos/8-stream/PowerTools/x86_64/os/"
+    #       enabled: false
+    #       # gpgkey: "http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-gpg-keys-8-6.el8.noarch.rpm"
+    #       # enabled: yes
+    #   # when: postgresql_install_repository
+    #   when:
+    #     - ansible_distribution == "RedHat"
+    #     - ansible_distribution_major_version == "8"
+
+    # - name: Install perl-IPC-Run package | RHEL 8+
+    #   yum:
+    #     name: perl-IPC-Run
+    #     state: present
+    #     enablerepo: powertools
+    #     disable_gpg_check: true
+    #   when:
+    #     - ansible_distribution == "RedHat"
+    #     - ansible_distribution_major_version == "8"
+
+
+
+
+    # - name: Add crb | RHEL 9
+    #   yum_repository:
+    #       name: crb
+    #       description: Centos8 - CRB
+    #       baseurl: "https://mirror.stream.centos.org/9-stream/CRB/x86_64/os/"
+    #       enabled: false
+    #       # gpgkey: "http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-gpg-keys-8-6.el8.noarch.rpm"
+    #       # enabled: yes
+    #   # when: postgresql_install_repository
+    #   when:
+    #     - ansible_distribution == "RedHat"
+    #     - ansible_distribution_major_version == "9"
+
+    # - name: Install perl-IPC-Run package | RHEL 9
+    #   yum:
+    #     name: perl-IPC-Run
+    #     state: present
+    #     enablerepo: crb
+    #     disable_gpg_check: true
+    #   when:
+    #     - ansible_distribution == "RedHat"
+    #     - ansible_distribution_major_version >= "9"
+
+    # # http://mirror.centos.org/centos/8-stream/PowerTools/x86_64/os/
 
     - name: Install prerequisites
       block:
