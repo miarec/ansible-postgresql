@@ -62,7 +62,7 @@
         when: ansible_distribution_major_version == "9"
 
 
-      - name: Add {{ item.name }} Repository | RHEL
+      - name: Add Temporary Repositories | RHEL
         yum_repository:
             name: "{{ item.name }}"
             description: "Centos {{ ansible_distribution_major_version }} - {{ item.name }}"
