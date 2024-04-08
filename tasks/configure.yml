@@ -212,7 +212,7 @@
     state: directory
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
-    mode: u=rwX,g=rwXs,o=rx
+    mode: 0755
   notify: restart postgresql
 
 - block:
