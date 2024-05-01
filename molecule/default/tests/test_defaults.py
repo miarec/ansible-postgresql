@@ -12,7 +12,7 @@ def test_directories(host):
             "/etc/postgresql/{}/main".format(postgresql_version),
             "/var/run/postgresql"
         ]
-    if host.system_info.distribution == "centos":
+    else:
         dirs = [
             "/etc/postgresql/{}/data".format(postgresql_version),
             "/var/run/postgresql"
@@ -29,7 +29,7 @@ def test_files(host):
             "/etc/postgresql/{}/main/pg_ident.conf".format(postgresql_version),
             "/var/run/postgresql/{}-main.pid".format(postgresql_version)
         ]
-    if host.system_info.distribution == "centos":
+    else:
         files = [
             "/etc/postgresql/{}/data/pg_hba.conf".format(postgresql_version),
             "/etc/postgresql/{}/data/pg_ident.conf".format(postgresql_version),
@@ -44,7 +44,7 @@ def test_files(host):
 def test_service(host):
     if host.system_info.distribution == "ubuntu":
         s = host.service("postgresql")
-    if host.system_info.distribution == "centos":
+    else:
         s = host.service("postgresql-{}".format(postgresql_version))
     assert s.is_enabled
     assert s.is_running

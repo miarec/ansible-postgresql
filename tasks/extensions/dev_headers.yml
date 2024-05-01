@@ -10,23 +10,54 @@
   notify:
     - restart postgresql
 
-- name: PostgreSQL | Extensions | Make sure the development headers are installed | RedHat
-  yum: 
-    name:
-      - "postgresql{{ postgresql_version_terse }}-libs"
-      - "postgresql{{ postgresql_version_terse }}-devel"
-    state: present 
-    update_cache: yes
-  when: ansible_pkg_mgr == "yum" and ansible_os_family == "RedHat"
-  notify:
-    - restart postgresql
+- name: PostgreSQL | Extensions | Define Additional Repositories Based on OS | RedHat
+  block:
+  # This likley only applies to version 11+ but currently can not build for anything below 12
+  # Once that is restored, I will verify and add an addtional filter base on postgresql version
+  - name: PostgreSQL | Extensions | Define Additional Repositories | CentOS
+    set_fact:
+      _redhat_additonal_repos:
+        - epel-release
+        - centos-release-scl
+    when: ansible_distribution == "CentOS"
 
-- name: PostgreSQL | Extensions | Make sure the development headers are installed | Fedora
-  dnf:
+  - name: PostgreSQL | Extensions | Define Additional Repositories | RockyLinux
+    set_fact:
+      _redhat_additonal_repos:
+        - epel-release
+    when: ansible_distribution == "Rocky"
+
+  when: ansible_os_family == "RedHat"
+
+
+- name: PostgreSQL | Extensions | Install Additonal Repositories | RedHat
+  package:
+    name: "{{ _redhat_additonal_repos | default ([]) }}"
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: PostgreSQL | Extensions | Define enablerepo baded on Version | RockyLinux
+  block:
+  - name: PostgreSQL | Extensions | Define enablerepo | RockyLinux8
+    set_fact:
+      _enablerepo: powertools
+    when: ansible_distribution_major_version == "8"
+
+  - name: PostgreSQL | Extensions | Define enablerepo | RockyLinux9
+    set_fact:
+      _enablerepo: crb
+    when: ansible_distribution_major_version == "9"
+  when:
+    - ansible_distribution == "Rocky"
+
+- name: PostgreSQL | Extensions | Make sure the development headers are installed | RedHat
+  package:
     name:
       - "postgresql{{ postgresql_version_terse }}-libs"
       - "postgresql{{ postgresql_version_terse }}-devel"
     state: present
-  when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
+    update_cache: yes
+    enablerepo: "{{ _enablerepo | default ([]) }}"
+  when: ansible_os_family == "RedHat"
   notify:
     - restart postgresql

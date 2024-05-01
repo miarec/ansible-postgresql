@@ -2,8 +2,6 @@
 ![CI](https://github.com/miarec/ansible-postgresql/actions/workflows/ci.yml/badge.svg?event=push)
 
 
-
-
 Ansible role which installs and configures PostgreSQL, extensions, databases and users.
 
 
@@ -14,7 +12,7 @@ This has been tested on Ansible 2.4.0 and higher.
 To install:
 
 ```
-ansible-galaxy install ANXS.postgresql
+ansible-galaxy install miarec.postgresql
 ```
 
 #### Example Playbook
@@ -24,25 +22,22 @@ Including an example of how to use your role:
     - hosts: postgresql-server
       become: yes
       roles:
-         - { role: anxs.postgresql }
+         - { role: miarec.postgresql }
 
-#### Dependencies
-
-- ANXS.monit ([Galaxy](https://galaxy.ansible.com/list#/roles/502)/[GH](https://github.com/ANXS/monit)) if you want monit protection (in that case, you should set `monit_protection: true`)
 
 
 #### Compatibility matrix
 
-| Distribution / PostgreSQL | <= 9.3 | 9.4 | 9.5 | 9.6 | 10 | 11 | 12 |
-| ------------------------- |:---:|:---:|:---:|:---:|:--:|:--:|:--:|
-| Ubuntu 14.04 | :no_entry: | :no_entry:| :no_entry:| :no_entry:| :no_entry:| :no_entry:| :no_entry:|
-| Ubuntu 16.04 | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 8.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 9.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 6.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 7.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 8.x | :no_entry: | :grey_question:| :grey_question:| :grey_question:| :grey_question:| :grey_question:| :grey_question:|
-| Fedora latest | :no_entry: | :x:| :x:| :x:| :x:| :x:| :x:|
+| Distribution / PostgreSQL | 12 | 13 | 14 | 15 |
+| ------------------------- |:---:|:---:|:---:|:---:|
+| Ubuntu 20.04 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Ubuntu 22.04 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 7 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| RockyLinux8 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| RockyLinux9 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| RHEL 7 | :white_check_mark: | :white_check_mark:| :warning:| :warning:|
+| RHEL 8 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| RHEL 9 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
 
 - :white_check_mark: - tested, works fine
 - :warning: - Not for production use
@@ -132,29 +127,3 @@ If you are contributing, please first test your changes within the vagrant envir
 #### License
 
 Licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
-
-
-#### Thanks
-
-Creator:
-- [Pjan Vandaele](https://github.com/pjan)
-
-Maintainers:
-- [Jonathan Lozada D.](https://github.com/jlozadad)
-- [Jonathan Freedman](https://github.com/otakup0pe)
-- [Sergei Antipov](https://github.com/UnderGreen)
-- [Greg Clough](https://github.com/gclough)
-
-Top Contributors:
-- [David Farrington](https://github.com/farridav)
-- [Jesse Lang](https://github.com/jesselang)
-- [Michael Conrad](https://github.com/MichaelConrad)
-- [Sébastien Alix](https://github.com/sebalix)
-- [Copperfield](https://github.com/Copperfield)
-
-- [Ralph von der Heyden](https://github.com/ralph)
-
-
-#### Feedback, bug-reports, requests, ...
-
-Are [welcome](https://github.com/ANXS/postgresql/issues)!
