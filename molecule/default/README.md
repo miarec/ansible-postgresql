@@ -21,3 +21,4 @@ MOLECULE_DISTRO=centos7 MOLECULE_POSTGRESQL_VERSION=12 molecule test
     - `rockylinux9`
     - `centos7`
  - `MOLECULE_POSTGRESQL_VERSION` defines variable `postgresql_version`, default `12`
+ - `MOLECULE_ANSIBLE_VERBOSITY` 0-3 used for troubleshooting, will set verbosity of ansible output, same as `-vvv`, default `0`
