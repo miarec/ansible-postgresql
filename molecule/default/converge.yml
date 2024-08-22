@@ -13,15 +13,37 @@
     # the UBI based docker image uses CentOS repositories,
     # Those pacakages are available in `centos-release-scl` and `epel-release`
     # in standard runs of this role, this step would not be required
-    - name: Install prerequisites | RHEL 7
-      yum:
-        name: "{{ item }}"
-      with_items:
-        - centos-release-scl
-        - epel-release
+
+    - name: Install repo | RHEL 7
       when:
-        - ansible_os_family == "RedHat"
+        - ansible_distribution == "RedHat"
         - ansible_distribution_major_version == "7"
+      block:
+
+        - name: Install SCL | RedHat 7
+          yum_repository:
+            name: sclo
+            description: sclo
+            baseurl: "https://vault.centos.org/centos/7/sclo/x86_64/sclo"
+            gpgkey: "https://vault.centos.org/RPM-GPG-KEY-CentOS-7"
+            enabled: true
+
+        - name: Install SCL-RH | RedHat 7
+          yum_repository:
+            name: sclo-rh
+            description: sclo-rh
+            baseurl: "https://vault.centos.org/centos/7/sclo/x86_64/rh"
+            gpgkey: "https://www.centos.org/keys/RPM-GPG-KEY-CentOS-SIG-SCLo"
+            enabled: true
+
+        - name: Install EPEL | RedHat 7
+          yum_repository:
+            name: epel
+            description: EPEL
+            baseurl: "https://dl.fedoraproject.org/pub/archive/epel/7/x86_64/"
+            gpgkey: "http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
+            enabled: true
+
 
     - name: Install prerequisites | Debian
       block:
