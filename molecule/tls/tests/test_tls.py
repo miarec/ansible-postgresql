@@ -86,4 +86,5 @@ def test_postgresql_connection_without_tls_fails(host):
         "-c 'SELECT 1;'"
     )
     # Connection should fail when TLS is required via hostssl-only pg_hba config
-    assert cmd.rc != 0 or "SELECT" not in cmd.stdout
+    assert cmd.rc != 0, "Connection without TLS should be rejected"
+

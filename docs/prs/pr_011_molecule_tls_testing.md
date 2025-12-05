@@ -54,7 +54,7 @@ Brief list of main changes:
 
 ## Notes for Reviewers
 
-- The prepare.yml creates postgres user/group before certificates so the server key can have proper group ownership (0640) for PostgreSQL to read
+- The prepare.yml creates postgres user/group before certificates so the server key can be owned by the postgres user with strict `0600` permissions, as required by PostgreSQL
 - Tests use `hostssl` entries in pg_hba.conf with `trust` auth method for testing simplicity
 - Invalid client certificate is self-signed (not CA-signed) to test that only CA-signed certs are accepted
 - Tests verify both positive cases (valid TLS works) and negative cases (non-TLS fails with hostssl-only config)

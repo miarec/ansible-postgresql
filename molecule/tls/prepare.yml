@@ -120,11 +120,14 @@
         path: "{{ tls_dir }}/ca.key"
         mode: "0600"
 
-    - name: Set proper permissions on server key (readable by postgres user)
+    # PostgreSQL requires the server private key to be owned by the
+    # PostgreSQL service user and not be group/world readable; otherwise
+    # it refuses to start with a "private key file has group or world access" error.
+    - name: Set proper permissions on server key
       file:
         path: "{{ tls_dir }}/server.key"
-        mode: "0640"
-        owner: root
+        mode: "0600"
+        owner: "{{ postgres_user }}"
         group: "{{ postgres_group }}"
 
     - name: Set proper permissions on client keys
