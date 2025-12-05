@@ -24,7 +24,7 @@
           name: epel-release
           state: present
         when:
-          - ansible_distribution == "CentOS"
+          - ansible_facts['distribution'] == "CentOS"
           - postgresql_version == "15"
 
       # When module postgresql is enabled, all packages that has the same name
@@ -33,7 +33,7 @@
       - name: PostgreSQL | Disable postgresql module (necessary for RHEL8+)
         command:
           cmd: dnf module disable postgresql -y
-        when: "ansible_distribution_major_version >= '8'"
+        when: "ansible_facts['distribution_major_version'] >= '8'"
         register: disable_postgresql_module
         failed_when: false
         changed_when:
