@@ -13,7 +13,7 @@
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
     state: directory
-    mode: 0700
+    mode: "0700"
   register: pgdata_dir_exist
 
 - name: PostgreSQL | Make sure the postgres WAL directory exists
@@ -22,7 +22,7 @@
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
     state: directory
-    mode: 0700
+    mode: "0700"
   register: pgwal_dir_exist
   when: postgresql_wal_directory != ""
 
@@ -32,12 +32,14 @@
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
     state: directory
-    mode: 0700
+    mode: "0700"
   register: pglog_dir_exist
   when: postgresql_log_directory != "pg_log"
 
 - name: PostgreSQL | Ensure the locale for lc_collate and lc_ctype is generated | Debian
-  locale_gen: name="{{ item }}" state=present
+  locale_gen:
+    name: "{{ item }}"
+    state: present
   with_items:
     - "{{ postgresql_locale }}"
     - "{{ postgresql_ctype }}"
@@ -80,7 +82,8 @@
   when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
 
 - name: PostgreSQL | Update systemd | Debian
-  command: systemctl daemon-reload
+  systemd:
+    daemon_reload: true
   become: yes
   when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
 
@@ -121,7 +124,7 @@
     path: "{{ postgresql_conf_directory }}"
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
-    mode: 0700
+    mode: "0700"
     state: directory
 
 - name: PostgreSQL | Update configuration - pt. 1 (pg_hba.conf)
@@ -130,7 +133,7 @@
     dest: "{{postgresql_conf_directory}}/pg_hba.conf"
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
-    mode: 0640
+    mode: "0640"
   register: postgresql_configuration_pt1
 
 - name: PostgreSQL | Update configuration - pt. 2 (postgresql.conf)
@@ -140,7 +143,7 @@
     dest: "{{postgresql_conf_directory}}/postgresql.conf"
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
-    mode: 0640
+    mode: "0640"
   register: postgresql_configuration_pt2
 
 - name: PostgreSQL | Update configuration - pt. 3 (pgtune)
@@ -179,7 +182,7 @@
     dest: "{{ postgresql_ident_file }}"
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
-    mode: 0640
+    mode: "0640"
   register: postgresql_configuration_pt4
   notify: restart postgresql
 
@@ -189,13 +192,13 @@
     state: directory
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
-    mode: 0755
+    mode: "0755"
 
 - name: PostgreSQL | Ensure the systemd directory for PostgreSQL exists | RedHat
   file:
     name: "/etc/systemd/system/postgresql-{{ postgresql_version }}.service.d"
     state: directory
-    mode: 0755
+    mode: "0755"
   when: ansible_os_family == "RedHat"
   notify: restart postgresql
 
@@ -212,7 +215,7 @@
     state: directory
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
-    mode: 0755
+    mode: "0755"
   notify: restart postgresql
 
 - block:

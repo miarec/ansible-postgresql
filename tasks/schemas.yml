@@ -2,13 +2,13 @@
 
 - name: PostgreSQL | Add Schema to databases
   postgresql_schema:
-    database: "{{ item.database }}"
+    login_db: "{{ item.database }}"
     schema: "{{ item.schema }}"
     owner: "{{ item.owner | default(postgresql_database_owner) }}"
     login_host: "{{ item.host | default(omit) }}"
     login_password: "{{ item.password | default(omit) }}"
     login_user: "{{ postgresql_admin_user }}"
-    port: "{{ postgresql_port }}"
+    login_port: "{{ postgresql_port }}"
     state: "{{ item.state | default(present) }}"
   become: yes
   become_user: "{{ postgresql_admin_user }}"
