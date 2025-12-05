@@ -5,6 +5,10 @@
 Ansible role which installs and configures PostgreSQL, extensions, databases and users.
 
 
+This role was originally forked from [ANXS/postgresql](https://github.com/ANXS/postgresql).
+It deviates significantly from the original codebase and has been adapted to our needs.
+
+
 #### Installation
 
 This has been tested on Ansible 2.4.0 and higher.
@@ -30,13 +34,14 @@ Including an example of how to use your role:
 
 | Distribution / PostgreSQL | 12 | 13 | 14 | 15 |
 | ------------------------- |:---:|:---:|:---:|:---:|
-| Ubuntu 20.04 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Ubuntu 20.04 | :no_entry: | :no_entry:| :no_entry:| :no_entry:|
 | Ubuntu 22.04 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 7 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| RockyLinux8 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Ubuntu 24.04 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 7 | :no_entry: | :no_entry:| :no_entry:| :no_entry:|
+| RockyLinux8 | :no_entry: | :no_entry:| :no_entry:| :no_entry:|
 | RockyLinux9 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| RHEL 7 | :white_check_mark: | :white_check_mark:| :warning:| :warning:|
-| RHEL 8 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| RHEL 7 | :no_entry: | :no_entry:| :no_entry:| :no_entry:|
+| RHEL 8 | :no_entry: | :no_entry:| :no_entry:| :no_entry:|
 | RHEL 9 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
 
 - :white_check_mark: - tested, works fine
@@ -113,15 +118,30 @@ There's a lot more knobs and bolts to set, which you can find in the [defaults/m
 
 #### Testing
 
-This project comes with a Vagrantfile, this is a fast and easy way to test changes to the role, fire it up with `vagrant up`
+This project uses [Molecule](https://molecule.readthedocs.io/) with Docker for testing. Dependencies are managed with [uv](https://docs.astral.sh/uv/).
 
-See [vagrant docs](https://docs.vagrantup.com/v2/) for getting setup with vagrant
+Run molecule tests:
 
-Once your VM is up, you can reprovision it using either `vagrant provision`, or `ansible-playbook tests/playbook.yml -i vagrant-inventory`
+```bash
+# Run tests with default settings (ubuntu2404, PostgreSQL 12)
+uv run molecule test
 
-If you want to toy with the test play, see [tests/playbook.yml](./tests/playbook.yml), and change the variables in [tests/vars.yml](./tests/vars.yml)
+# Run with specific distribution and PostgreSQL version
+MOLECULE_DISTRO=rockylinux9 MOLECULE_POSTGRESQL_VERSION=15 uv run molecule test
 
-If you are contributing, please first test your changes within the vagrant environment, (using the targeted distribution), and if possible, ensure your change is covered in the tests found in [.travis.yml](./.travis.yml)
+# Individual molecule phases
+uv run molecule create    # Create test instance
+uv run molecule converge  # Run the role
+uv run molecule verify    # Run tests
+uv run molecule destroy   # Cleanup
+
+# Run ansible-lint
+uv run ansible-lint
+```
+
+Supported `MOLECULE_DISTRO` values: `ubuntu2204`, `ubuntu2404`, `rockylinux9`, `rhel9`
+
+Supported `MOLECULE_POSTGRESQL_VERSION` values: `12`, `13`, `14`, `15`
 
 
 #### License
