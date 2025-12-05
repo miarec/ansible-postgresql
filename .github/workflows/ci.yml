@@ -55,3 +55,31 @@ jobs:
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.distro }}
           MOLECULE_POSTGRESQL_VERSION: ${{ matrix.version }}
+
+  test-tls:
+    name: molecule-tls
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        distro:
+          - ubuntu2204
+          - ubuntu2404
+          - rockylinux9
+          - rhel9
+        version: [12, 15]
+
+    steps:
+      - name: Check out the Repository
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Run molecule TLS tests
+        run: uv run molecule test -s tls
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          MOLECULE_DISTRO: ${{ matrix.distro }}
+          MOLECULE_POSTGRESQL_VERSION: ${{ matrix.version }}
