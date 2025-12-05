@@ -63,5 +63,4 @@ Brief list of main changes:
 
 ## Docs
 
-* [x] N/A
-* [ ] Updated relevant documentation
+* [x] N/A - TLS configuration is already documented in defaults/main.yml variables
