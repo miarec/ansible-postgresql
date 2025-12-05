@@ -9,3 +9,5 @@ Icon
 test
 *.retry
 **/__pycache__/
+/.venv/
+/.ansible/

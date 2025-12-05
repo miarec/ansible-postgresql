@@ -6,7 +6,7 @@
     state: present
     update_cache: yes
     cache_valid_time: "{{ apt_cache_valid_time | default (3600) }}"
-  when: ansible_os_family == "Debian"
+  when: ansible_facts['os_family'] == "Debian"
   notify:
     - restart postgresql
 
@@ -19,36 +19,36 @@
       _redhat_additonal_repos:
         - epel-release
         - centos-release-scl
-    when: ansible_distribution == "CentOS"
+    when: ansible_facts['distribution'] == "CentOS"
 
   - name: PostgreSQL | Extensions | Define Additional Repositories | RockyLinux
     set_fact:
       _redhat_additonal_repos:
         - epel-release
-    when: ansible_distribution == "Rocky"
+    when: ansible_facts['distribution'] == "Rocky"
 
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts['os_family'] == "RedHat"
 
 
 - name: PostgreSQL | Extensions | Install Additonal Repositories | RedHat
   package:
     name: "{{ _redhat_additonal_repos | default ([]) }}"
     state: present
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts['os_family'] == "RedHat"
 
 - name: PostgreSQL | Extensions | Define enablerepo baded on Version | RockyLinux
   block:
   - name: PostgreSQL | Extensions | Define enablerepo | RockyLinux8
     set_fact:
       _enablerepo: powertools
-    when: ansible_distribution_major_version == "8"
+    when: ansible_facts['distribution_major_version'] == "8"
 
   - name: PostgreSQL | Extensions | Define enablerepo | RockyLinux9
     set_fact:
       _enablerepo: crb
-    when: ansible_distribution_major_version == "9"
+    when: ansible_facts['distribution_major_version'] == "9"
   when:
-    - ansible_distribution == "Rocky"
+    - ansible_facts['distribution'] == "Rocky"
 
 - name: PostgreSQL | Extensions | Make sure the development headers are installed | RedHat
   package:
@@ -58,6 +58,6 @@
     state: present
     update_cache: yes
     enablerepo: "{{ _enablerepo | default ([]) }}"
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts['os_family'] == "RedHat"
   notify:
     - restart postgresql

@@ -49,7 +49,7 @@
       - "postgresql-contrib-{{postgresql_version}}"
     state: present
     update_cache: yes
-    default_release: "{{postgresql_default_release | default(ansible_distribution_release + '-pgdg')}}"
+    default_release: "{{postgresql_default_release | default(ansible_facts['distribution_release'] + '-pgdg')}}"
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   environment: "{{postgresql_env}}"
 
