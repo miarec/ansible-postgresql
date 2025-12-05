@@ -19,8 +19,14 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
 
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install Ansible collections
+        run: uv run ansible-galaxy collection install community.general community.postgresql
+
       - name: Run ansible-lint
-        uses: ansible/ansible-lint@main
+        run: uv run ansible-lint
 
   test:
     name: molecule
