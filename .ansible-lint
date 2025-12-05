@@ -1,7 +1,5 @@
 ---
 exclude_paths:
-  - molecule/
-  - tests/
   - .venv/
 
 skip_list:
@@ -13,15 +11,11 @@ skip_list:
   - yaml[colons]
   - yaml[commas]
   - yaml[comments]
-  - yaml[new-line-at-end-of-file]
   - yaml[indentation]
   - jinja[spacing]
-  - name[template]
   - name[missing]
   - name[casing]
-  - command-instead-of-shell
   - risky-file-permissions
   - key-order[task]
   - no-changed-when
-  - meta-no-tags
   - ignore-errors

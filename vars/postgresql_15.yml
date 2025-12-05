@@ -1,4 +1,4 @@
 ---
 # PostgreSQL vars for v15
 
-postgresql_recovery_prefetch: off
+postgresql_recovery_prefetch: "off"
