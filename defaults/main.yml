@@ -862,6 +862,4 @@ postgresql_yum_repository_gpgkey: >-
 postgresql_dnf_repository_baseurl: "{{ postgresql_yum_repository_url }}/{{ postgresql_version }}/fedora/fedora-{{ ansible_facts['distribution_major_version'] }}-{{ ansible_facts['architecture'] }}"
 postgresql_dnf_repository_gpgkey: "{{ postgresql_yum_repository_gpgkey }}"
 
-postgresql_apt_py3_dependencies: ["python3-psycopg2", "locales"]
-postgresql_apt_py2_dependencies: ["python-psycopg2", "python-pycurl", "locales"]
-postgresql_apt_dependencies: "{{ postgresql_apt_py3_dependencies if ansible_facts['python']['version']['major'] == 3 else postgresql_apt_py2_dependencies }}"
+postgresql_apt_dependencies: ["python3-psycopg2", "locales"]
