@@ -851,8 +851,11 @@ postgresql_pgdg_repository_url: "https://download.postgresql.org/pub/repos/yum/k
 
 # YUM (RedHat, CentOS, etc.) baseurl/gpgkey
 postgresql_yum_repository_baseurl: "{{ postgresql_yum_repository_url }}/{{ postgresql_version }}/{{ ansible_facts['os_family'] | lower }}/rhel-{{ ansible_facts['distribution_major_version'] }}-{{ ansible_facts['architecture'] }}"
-# postgresql_yum_repository_gpgkey: "{{ postgresql_pgdg_repository_url }}/PGDG-RPM-GPG-KEY-RHEL7"
-postgresql_yum_repository_gpgkey: "{{ postgresql_pgdg_repository_url }}/{{ 'PGDG-RPM-GPG-KEY-RHEL7' if ansible_facts['distribution_major_version'] == '7' else 'PGDG-RPM-GPG-KEY-RHEL' }}"
+# GPG key differs by architecture (aarch64 vs x86_64) and RHEL version
+postgresql_yum_repository_gpgkey: >-
+  {{ postgresql_pgdg_repository_url }}/PGDG-RPM-GPG-KEY-{{
+  'AARCH64-' if ansible_facts['architecture'] == 'aarch64' else ''
+  }}{{ 'RHEL7' if ansible_facts['distribution_major_version'] == '7' else 'RHEL' }}
 
 
 # DNF (Fedora) baseurl/gpgkey
