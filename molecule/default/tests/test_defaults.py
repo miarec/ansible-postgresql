@@ -57,3 +57,10 @@ def test_socket(host):
     for socket in sockets:
         s = host.socket(socket)
         assert s.is_listening
+
+
+def test_postgresql_query(host):
+    """Verify PostgreSQL accepts connections and responds to queries."""
+    cmd = host.run("sudo -u postgres psql -c 'SELECT 1;'")
+    assert cmd.rc == 0, f"Expected rc=0, got rc={cmd.rc}, stderr={cmd.stderr}"
+    assert "1" in cmd.stdout

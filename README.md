@@ -34,14 +34,14 @@ Including an example of how to use your role:
 
 | Distribution / PostgreSQL | 12 | 13 | 14 | 15 |
 | ------------------------- |:---:|:---:|:---:|:---:|
-| Ubuntu 20.04 | :no_entry: | :no_entry:| :no_entry:| :no_entry:|
+| Ubuntu 20.04 | :interrobang: | :interrobang:| :interrobang:| :interrobang:|
 | Ubuntu 22.04 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | Ubuntu 24.04 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | CentOS 7 | :no_entry: | :no_entry:| :no_entry:| :no_entry:|
-| RockyLinux8 | :no_entry: | :no_entry:| :no_entry:| :no_entry:|
+| RockyLinux8 | :interrobang: | :interrobang:| :interrobang:| :interrobang:|
 | RockyLinux9 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | RHEL 7 | :no_entry: | :no_entry:| :no_entry:| :no_entry:|
-| RHEL 8 | :no_entry: | :no_entry:| :no_entry:| :no_entry:|
+| RHEL 8 | :interrobang: | :interrobang:| :interrobang:| :interrobang:|
 | RHEL 9 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
 
 - :white_check_mark: - tested, works fine

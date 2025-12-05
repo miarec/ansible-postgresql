@@ -1,0 +1,149 @@
+---
+- name: Prepare TLS certificates
+  hosts: all
+  become: true
+
+  vars:
+    tls_dir: /etc/postgresql/tls
+    postgres_user: postgres
+    postgres_group: postgres
+
+  tasks:
+    - name: Install OpenSSL
+      package:
+        name: openssl
+        state: present
+
+    - name: Create PostgreSQL group
+      group:
+        name: "{{ postgres_group }}"
+        state: present
+
+    - name: Create PostgreSQL user
+      user:
+        name: "{{ postgres_user }}"
+        group: "{{ postgres_group }}"
+        shell: /bin/false
+        system: true
+        create_home: false
+
+    - name: Create TLS certificate directory
+      file:
+        path: "{{ tls_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Generate CA private key
+      command: openssl genrsa -out {{ tls_dir }}/ca.key 4096
+      args:
+        creates: "{{ tls_dir }}/ca.key"
+
+    - name: Generate CA certificate
+      command: >
+        openssl req -x509 -new -nodes
+        -key {{ tls_dir }}/ca.key
+        -sha256 -days 365
+        -out {{ tls_dir }}/ca.crt
+        -subj "/CN=PostgreSQL-Test-CA"
+      args:
+        creates: "{{ tls_dir }}/ca.crt"
+
+    - name: Generate server private key
+      command: openssl genrsa -out {{ tls_dir }}/server.key 2048
+      args:
+        creates: "{{ tls_dir }}/server.key"
+
+    - name: Generate server CSR
+      command: >
+        openssl req -new
+        -key {{ tls_dir }}/server.key
+        -out {{ tls_dir }}/server.csr
+        -subj "/CN=localhost"
+      args:
+        creates: "{{ tls_dir }}/server.csr"
+
+    - name: Sign server certificate with CA
+      command: >
+        openssl x509 -req
+        -in {{ tls_dir }}/server.csr
+        -CA {{ tls_dir }}/ca.crt
+        -CAkey {{ tls_dir }}/ca.key
+        -CAcreateserial
+        -out {{ tls_dir }}/server.crt
+        -days 365 -sha256
+      args:
+        creates: "{{ tls_dir }}/server.crt"
+
+    - name: Generate client private key
+      command: openssl genrsa -out {{ tls_dir }}/client.key 2048
+      args:
+        creates: "{{ tls_dir }}/client.key"
+
+    - name: Generate client CSR
+      command: >
+        openssl req -new
+        -key {{ tls_dir }}/client.key
+        -out {{ tls_dir }}/client.csr
+        -subj "/CN=postgres-client"
+      args:
+        creates: "{{ tls_dir }}/client.csr"
+
+    - name: Sign client certificate with CA
+      command: >
+        openssl x509 -req
+        -in {{ tls_dir }}/client.csr
+        -CA {{ tls_dir }}/ca.crt
+        -CAkey {{ tls_dir }}/ca.key
+        -CAcreateserial
+        -out {{ tls_dir }}/client.crt
+        -days 365 -sha256
+      args:
+        creates: "{{ tls_dir }}/client.crt"
+
+    - name: Generate invalid client private key (self-signed, not CA-signed)
+      command: openssl genrsa -out {{ tls_dir }}/invalid-client.key 2048
+      args:
+        creates: "{{ tls_dir }}/invalid-client.key"
+
+    - name: Generate invalid client certificate (self-signed, not CA-signed)
+      command: >
+        openssl req -x509 -new -nodes
+        -key {{ tls_dir }}/invalid-client.key
+        -sha256 -days 365
+        -out {{ tls_dir }}/invalid-client.crt
+        -subj "/CN=invalid-client"
+      args:
+        creates: "{{ tls_dir }}/invalid-client.crt"
+
+    - name: Set proper permissions on CA key
+      file:
+        path: "{{ tls_dir }}/ca.key"
+        mode: "0600"
+
+    # PostgreSQL requires the server private key to be owned by the
+    # PostgreSQL service user and not be group/world readable; otherwise
+    # it refuses to start with a "private key file has group or world access" error.
+    - name: Set proper permissions on server key
+      file:
+        path: "{{ tls_dir }}/server.key"
+        mode: "0600"
+        owner: "{{ postgres_user }}"
+        group: "{{ postgres_group }}"
+
+    - name: Set proper permissions on client keys
+      file:
+        path: "{{ item }}"
+        mode: "0600"
+      loop:
+        - "{{ tls_dir }}/client.key"
+        - "{{ tls_dir }}/invalid-client.key"
+
+    - name: Set proper permissions on certificates
+      file:
+        path: "{{ item }}"
+        mode: "0644"
+      loop:
+        - "{{ tls_dir }}/ca.crt"
+        - "{{ tls_dir }}/server.crt"
+        - "{{ tls_dir }}/client.crt"
+        - "{{ tls_dir }}/invalid-client.crt"

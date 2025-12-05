@@ -1,0 +1,57 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  vars:
+    postgresql_version: "{{ lookup('env', 'POSTGRESQL_VERSION') }}"
+    postgresql_ext_install_dev_headers: true
+    # TLS configuration
+    postgresql_ssl: true
+    postgresql_ssl_cert_file: /etc/postgresql/tls/server.crt
+    postgresql_ssl_key_file: /etc/postgresql/tls/server.key
+    postgresql_ssl_ca_file: /etc/postgresql/tls/ca.crt
+    # Listen on all interfaces for TLS testing
+    postgresql_listen_addresses:
+      - "*"
+    # Override default pg_hba to use hostssl with trust for TLS testing
+    postgresql_pg_hba_default:
+      - type: local
+        database: all
+        user: all
+        address: ""
+        method: "peer"
+        comment: "local is for Unix domain socket connections only"
+      - type: hostssl
+        database: all
+        user: all
+        address: "127.0.0.1/32"
+        method: "trust"
+        comment: "IPv4 TLS connections (trust for testing)"
+      - type: hostssl
+        database: all
+        user: all
+        address: "::1/128"
+        method: "trust"
+        comment: "IPv6 TLS connections (trust for testing)"
+      - type: local
+        database: all
+        user: "{{ postgresql_admin_user }}"
+        address: ""
+        method: "peer map=root_as_{{ postgresql_admin_user }}"
+        comment: "Local root Unix user, passwordless access"
+
+  pre_tasks:
+    - name: Install prerequisites | Debian
+      block:
+        - name: Update apt cache
+          apt:
+            update_cache: true
+            cache_valid_time: 600
+          changed_when: false
+          when: ansible_facts['os_family'] == "Debian"
+
+  roles:
+    - role: ansible-postgresql
+      tags:
+        - postgresql
