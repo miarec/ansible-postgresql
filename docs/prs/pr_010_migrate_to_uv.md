@@ -21,7 +21,9 @@ How did you verify it works?
 
 * [ ] Added/updated tests
 * [x] Ran `uv run ansible-lint` - passes with 0 failures, 0 warnings
-* Notes: Molecule tests require Docker environment; CI will run full test matrix
+* [x] Ran `uv run molecule test` on Ubuntu 24.04 - all 4 tests passed
+* [x] Ran `uv run molecule test` on Rocky Linux 9 - all 4 tests passed
+* Notes: CI will run full test matrix across all distros and PostgreSQL versions 12-15
 
 ---
 
