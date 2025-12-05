@@ -2,7 +2,7 @@ This file provides guidance to coding agent when working with code in this repos
 
 ## Overview
 
-This is an Ansible role (`miarec.postgresql`) for installing and configuring PostgreSQL on Ubuntu (20.04, 22.04, 24.04), CentOS 7, Rocky Linux 8/9, and RHEL 7/8/9. It supports PostgreSQL versions 12-15.
+This is an Ansible role (`miarec.postgresql`) for installing and configuring PostgreSQL on Ubuntu (22.04, 24.04), Rocky Linux 9, and RHEL 9. It supports PostgreSQL versions 12-15.
 
 ## Testing Commands
 
@@ -24,7 +24,7 @@ uv run molecule destroy
 uv run ansible-lint
 ```
 
-Valid `MOLECULE_DISTRO` values: ``ubuntu2204`, `ubuntu2404`, `rockylinux8`, `rockylinux9`, `rhel9`
+Valid `MOLECULE_DISTRO` values: `ubuntu2204`, `ubuntu2404`, `rockylinux9`, `rhel9`
 
 ## Role Architecture
 
