@@ -52,6 +52,6 @@
           when: ansible_facts['os_family'] == "Debian"
 
   roles:
-    - role: ansible-postgresql
+    - role: "{{ playbook_dir }}/../.." # noqa: role-name[path]
       tags:
         - postgresql
