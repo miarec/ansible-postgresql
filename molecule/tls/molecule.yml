@@ -4,7 +4,7 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: ansible-postgresql-tls
+  - name: ansible-postgresql-tls-${MOLECULE_DISTRO:-ubuntu2404}
     image: ghcr.io/miarec/${MOLECULE_DISTRO:-ubuntu2404}-systemd:latest
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
@@ -18,7 +18,7 @@ provisioner:
   playbooks:
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}
   env:
-    POSTGRESQL_VERSION: ${MOLECULE_POSTGRESQL_VERSION:-12}
+    POSTGRESQL_VERSION: ${MOLECULE_POSTGRESQL_VERSION:-15}
     ANSIBLE_VERBOSITY: ${MOLECULE_ANSIBLE_VERBOSITY:-0}
     ANSIBLE_ROLES_PATH: ${MOLECULE_PROJECT_DIRECTORY}/../
 verifier:
