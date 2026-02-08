@@ -1,21 +1,7 @@
 # file: postgresql/tasks/check_pg_version_mismatch.yml
 
-# Check binary version
-- name: PostgreSQL | Check binary version
-  shell: |
-    set -o pipefail
-    psql --version | sed 's/^psql (//' | sed 's/)//' | awk '{print $1, $2}'
-  args:
-    executable: /bin/bash
-  become: yes
-  become_user: "{{ postgresql_service_user }}"
-  changed_when: false
-  failed_when: postgresql_binary_version.stdout == ""
-  register: postgresql_binary_version
-  check_mode: no
-
-# Check database version
-- name: PostgreSQL | Check database version
+# Check server version
+- name: PostgreSQL | Check server version
   shell: |
     set -o pipefail
     psql --quiet --tuples-only --port={{ postgresql_port | int }} --command="select substring(version(),'[^\s]+\s+[^\s]+');" | sed 's/^ //'
@@ -24,14 +10,20 @@
   become: yes
   become_user: "{{ postgresql_service_user }}"
   changed_when: false
-  failed_when: postgresql_database_version.stdout == ""
-  register: postgresql_database_version
+  failed_when: postgresql_server_version.stdout == ""
+  register: postgresql_server_version
   check_mode: no
 
-# If versions do not match, then restart PostgreSQL
-- name: PostgreSQL | Verify binary and database versions match
+# Build a regex for the requested major version.
+- name: PostgreSQL | Build server version regex
+  set_fact:
+    postgresql_server_version_regex: "PostgreSQL\\s+{{ postgresql_version }}(\\.|$)"
+  changed_when: false
+
+# If server version does not match the requested major version, restart PostgreSQL.
+- name: PostgreSQL | Verify server version matches requested version
   debug:
-    msg: "WARNING: Binary ({{ postgresql_binary_version.stdout }}) and Database ({{ postgresql_database_version.stdout }}) version mismatch. Restart required!"
-  when: postgresql_binary_version.stdout != postgresql_database_version.stdout
-  changed_when: postgresql_binary_version.stdout != postgresql_database_version.stdout
+    msg: "WARNING: Server ({{ postgresql_server_version.stdout }}) does not match requested PostgreSQL {{ postgresql_version }}."
+  when: postgresql_server_version.stdout is not search(postgresql_server_version_regex)
+  changed_when: postgresql_server_version.stdout is not search(postgresql_server_version_regex)
   notify: restart postgresql
