@@ -39,10 +39,17 @@ Including an example of how to use your role:
 | Ubuntu 24.04 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | CentOS 7 | :no_entry: | :no_entry:| :no_entry:| :no_entry:| :no_entry:| :no_entry:|
 | RockyLinux8 | :interrobang: | :interrobang:| :interrobang:| :interrobang:| :interrobang:| :interrobang:|
-| RockyLinux9 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+<<<<<<< HEAD
+| RockyLinux9 | :warning: | :warning:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 | RHEL 7 | :no_entry: | :no_entry:| :no_entry:| :no_entry:| :no_entry:| :no_entry:|
 | RHEL 8 | :interrobang: | :interrobang:| :interrobang:| :interrobang:| :interrobang:| :interrobang:|
-| RHEL 9 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| RHEL 9 | :warning: | :warning:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+=======
+| RockyLinux9 | :warning: | :warning:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| RHEL 7 | :no_entry: | :no_entry:| :no_entry:| :no_entry:| :no_entry:| :no_entry:|
+| RHEL 8 | :interrobang: | :interrobang:| :interrobang:| :interrobang:| :interrobang:| :interrobang:|
+| RHEL 9 | :warning: | :warning:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+>>>>>>> 23b78ec (docs: document PostgreSQL 16/17 support updates)
 
 - :white_check_mark: - tested, works fine
 - :warning: - Not for production use
