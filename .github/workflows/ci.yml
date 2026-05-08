@@ -39,7 +39,7 @@ jobs:
           - ubuntu2404
           - rockylinux9
           - rhel9
-        version: [12, 13, 14, 15]
+        version: [12, 13, 14, 15, 16, 17]
 
     steps:
       - name: Check out the Repository
@@ -67,7 +67,7 @@ jobs:
           - ubuntu2404
           - rockylinux9
           - rhel9
-        version: [12, 15]
+        version: [12, 15, 16, 17]
 
     steps:
       - name: Check out the Repository
