@@ -16,6 +16,18 @@
     - "../vars/empty.yml"
   tags: [always]
 
+- name: PostgreSQL | Collect supported major versions
+  set_fact:
+    postgresql_supported_versions: "{{ query('fileglob', role_path ~ '/templates/postgresql.conf-*.j2') | map('basename') | map('regex_replace', 'postgresql.conf-(\\d+)\\.j2', '\\1') | list }}"
+  tags: [always]
+
+- name: PostgreSQL | Ensure requested version is supported
+  assert:
+    that:
+      - (postgresql_version | string) in postgresql_supported_versions
+    fail_msg: "postgresql_version {{ postgresql_version }} lacks templates or vars. Supported versions: {{ postgresql_supported_versions | join(', ') }}"
+  tags: [always]
+
 - import_tasks: install_apt.yml
   when: ansible_facts['pkg_mgr'] == "apt"
   tags: [postgresql, postgresql-install]
