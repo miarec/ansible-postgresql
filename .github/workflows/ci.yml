@@ -34,12 +34,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        distro:
-          - ubuntu2204
-          - ubuntu2404
-          - rockylinux9
-          - rhel9
-        version: [12, 13, 14, 15]
+        distro: [ubuntu2204, ubuntu2404, rockylinux9, rhel9]
+        version: [12, 13, 14, 15, 16, 17]
+        exclude:
+          - distro: rockylinux9
+            version: 12
+          - distro: rockylinux9
+            version: 13
+          - distro: rhel9
+            version: 12
+          - distro: rhel9
+            version: 13
 
     steps:
       - name: Check out the Repository
@@ -67,7 +72,12 @@ jobs:
           - ubuntu2404
           - rockylinux9
           - rhel9
-        version: [12, 15]
+        version: [12, 15, 16, 17]
+        exclude:
+          - distro: rockylinux9
+            version: 12
+          - distro: rhel9
+            version: 12
 
     steps:
       - name: Check out the Repository

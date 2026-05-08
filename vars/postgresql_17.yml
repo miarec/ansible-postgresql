@@ -1,0 +1,4 @@
+---
+# PostgreSQL vars for v17
+
+# Defaults from defaults/main.yml are sufficient for this release.

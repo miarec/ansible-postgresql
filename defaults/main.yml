@@ -1,7 +1,7 @@
 # file: postgresql/defaults/main.yml
 
 # Basic settings
-postgresql_version: 15
+postgresql_version: 17
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"  # Short version of the postgresql_version, used in some path and filenames
 postgresql_encoding: "UTF-8"
 postgresql_data_checksums: false
@@ -47,6 +47,8 @@ postgresql_postgis_release_compatibility:
   13: "3.1"
   14: "3.2"
   15: "3.2"
+  16: "3.6"
+  17: "3.6"
 
 postgresql_ext_postgis_version: "{{ postgresql_postgis_release_compatibility.get(postgresql_version) }}"
 postgresql_ext_postgis_version_terse: "{{ postgresql_ext_postgis_version | replace('.','') }}"
