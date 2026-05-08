@@ -32,17 +32,17 @@ Including an example of how to use your role:
 
 #### Compatibility matrix
 
-| Distribution / PostgreSQL | 12 | 13 | 14 | 15 |
-| ------------------------- |:---:|:---:|:---:|:---:|
-| Ubuntu 20.04 | :interrobang: | :interrobang:| :interrobang:| :interrobang:|
-| Ubuntu 22.04 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Ubuntu 24.04 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 7 | :no_entry: | :no_entry:| :no_entry:| :no_entry:|
-| RockyLinux8 | :interrobang: | :interrobang:| :interrobang:| :interrobang:|
-| RockyLinux9 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| RHEL 7 | :no_entry: | :no_entry:| :no_entry:| :no_entry:|
-| RHEL 8 | :interrobang: | :interrobang:| :interrobang:| :interrobang:|
-| RHEL 9 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Distribution / PostgreSQL | 12 | 13 | 14 | 15 | 16 | 17 |
+| ------------------------- |:---:|:---:|:---:|:---:|:---:|:---:|
+| Ubuntu 20.04 | :interrobang: | :interrobang:| :interrobang:| :interrobang:| :interrobang:| :interrobang:|
+| Ubuntu 22.04 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Ubuntu 24.04 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 7 | :no_entry: | :no_entry:| :no_entry:| :no_entry:| :no_entry:| :no_entry:|
+| RockyLinux8 | :interrobang: | :interrobang:| :interrobang:| :interrobang:| :interrobang:| :interrobang:|
+| RockyLinux9 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| RHEL 7 | :no_entry: | :no_entry:| :no_entry:| :no_entry:| :no_entry:| :no_entry:|
+| RHEL 8 | :interrobang: | :interrobang:| :interrobang:| :interrobang:| :interrobang:| :interrobang:|
+| RHEL 9 | :white_check_mark: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 
 - :white_check_mark: - tested, works fine
 - :warning: - Not for production use
@@ -56,7 +56,7 @@ Including an example of how to use your role:
 
 ```yaml
 # Basic settings
-postgresql_version: 12
+postgresql_version: 17
 postgresql_encoding: "UTF-8"
 postgresql_locale: "en_US.UTF-8"
 postgresql_ctype: "en_US.UTF-8"
@@ -123,11 +123,11 @@ This project uses [Molecule](https://molecule.readthedocs.io/) with Docker for t
 Run molecule tests:
 
 ```bash
-# Run tests with default settings (ubuntu2404, PostgreSQL 12)
+# Run tests with default settings (ubuntu2404, PostgreSQL 17)
 uv run molecule test
 
 # Run with specific distribution and PostgreSQL version
-MOLECULE_DISTRO=rockylinux9 MOLECULE_POSTGRESQL_VERSION=15 uv run molecule test
+MOLECULE_DISTRO=rockylinux9 MOLECULE_POSTGRESQL_VERSION=16 uv run molecule test
 
 # Individual molecule phases
 uv run molecule create    # Create test instance
@@ -141,7 +141,7 @@ uv run ansible-lint
 
 Supported `MOLECULE_DISTRO` values: `ubuntu2204`, `ubuntu2404`, `rockylinux9`, `rhel9`
 
-Supported `MOLECULE_POSTGRESQL_VERSION` values: `12`, `13`, `14`, `15`
+Supported `MOLECULE_POSTGRESQL_VERSION` values: `12`, `13`, `14`, `15`, `16`, `17`
 
 
 #### License
