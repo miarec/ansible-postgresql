@@ -27,6 +27,20 @@
           - ansible_facts['distribution'] == "CentOS"
           - postgresql_version == "15"
 
+      # PostgreSQL 15 packages for EL7 require libzstd from EPEL.
+      # EPEL 7 is end-of-life, so use the archive.
+      - name: PostgreSQL | Add EPEL repository | RedHat 7 - PostgreSQL 15
+        yum_repository:
+          name: epel
+          description: EPEL
+          baseurl: "https://dl.fedoraproject.org/pub/archive/epel/7/x86_64/"
+          gpgkey: "http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_facts['distribution_major_version'] }}"
+          enabled: yes
+        when:
+          - ansible_facts['distribution'] == "RedHat"
+          - ansible_facts['distribution_major_version'] == "7"
+          - postgresql_version == "15"
+
       # When module postgresql is enabled, all packages that has the same name
       # with modular packages are excluded from all repositories
       # Reference: https://bugzilla.redhat.com/show_bug.cgi?id=1718201
