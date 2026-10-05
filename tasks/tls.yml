@@ -1,0 +1,41 @@
+# file: postgresql/tasks/tls.yml
+#
+# Upload the TLS files from the Ansible control machine. A file is uploaded
+# when its postgresql_ssl_*_src variable is set. Leave the variable empty when
+# the file is already on the host, for example when another tool manages it.
+#
+# All files are owned by root. Certificates are world readable (0644). The
+# private key is readable by root and the PostgreSQL service group only (0640).
+# PostgreSQL accepts a key owned by root when its mode is 0640 or stricter.
+
+- name: PostgreSQL | Upload TLS files
+  vars:
+    _postgresql_tls_files: >-
+      {{
+        [
+          {'src': postgresql_ssl_ca_file_src, 'dest': postgresql_ssl_ca_file},
+          {'src': postgresql_ssl_cert_file_src, 'dest': postgresql_ssl_cert_file},
+          {'src': postgresql_ssl_key_file_src, 'dest': postgresql_ssl_key_file, 'private': true},
+        ] | selectattr('src') | list
+      }}
+  block:
+    - name: PostgreSQL | Create TLS directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: "{{ postgresql_service_group }}"
+        mode: "0750"
+      loop: "{{ _postgresql_tls_files | map(attribute='dest') | map('dirname') | unique | list }}"
+
+    - name: PostgreSQL | Upload TLS certificates and private key
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: "{{ postgresql_service_group }}"
+        mode: "{{ '0640' if item.private | default(false) | bool else '0644' }}"
+      loop: "{{ _postgresql_tls_files }}"
+      loop_control:
+        label: "{{ item.src | basename }} -> {{ item.dest }}"
+      notify: restart postgresql

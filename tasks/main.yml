@@ -45,6 +45,10 @@
 - import_tasks: fdw.yml
   tags: [postgresql, postgresql-fdw]
 
+- import_tasks: tls.yml
+  when: postgresql_ssl | bool
+  tags: [postgresql, postgresql-configure]
+
 - import_tasks: configure.yml
   tags: [postgresql, postgresql-configure]
 
