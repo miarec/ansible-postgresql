@@ -5,27 +5,13 @@
 
   vars:
     tls_dir: /etc/postgresql/tls
-    postgres_user: postgres
-    postgres_group: postgres
+    tls_src_dir: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/tls"
 
   tasks:
     - name: Install OpenSSL
       package:
         name: openssl
         state: present
-
-    - name: Create PostgreSQL group
-      group:
-        name: "{{ postgres_group }}"
-        state: present
-
-    - name: Create PostgreSQL user
-      user:
-        name: "{{ postgres_user }}"
-        group: "{{ postgres_group }}"
-        shell: /bin/false
-        system: true
-        create_home: false
 
     - name: Create TLS certificate directory
       file:
@@ -120,16 +106,6 @@
         path: "{{ tls_dir }}/ca.key"
         mode: "0600"
 
-    # PostgreSQL requires the server private key to be owned by the
-    # PostgreSQL service user and not be group/world readable; otherwise
-    # it refuses to start with a "private key file has group or world access" error.
-    - name: Set proper permissions on server key
-      file:
-        path: "{{ tls_dir }}/server.key"
-        mode: "0600"
-        owner: "{{ postgres_user }}"
-        group: "{{ postgres_group }}"
-
     - name: Set proper permissions on client keys
       file:
         path: "{{ item }}"
@@ -147,3 +123,18 @@
         - "{{ tls_dir }}/server.crt"
         - "{{ tls_dir }}/client.crt"
         - "{{ tls_dir }}/invalid-client.crt"
+
+    # The role uploads these files from the control machine, like the
+    # production playbooks do. Move them off the host, so the test proves it.
+    - name: Fetch the TLS files that the role uploads
+      fetch:
+        src: "{{ tls_dir }}/{{ item }}"
+        dest: "{{ tls_src_dir }}/"
+        flat: true
+      loop: [ca.crt, server.crt, server.key]
+
+    - name: Remove the fetched TLS files from the host
+      file:
+        path: "{{ tls_dir }}/{{ item }}"
+        state: absent
+      loop: [ca.crt, server.crt, server.key]
