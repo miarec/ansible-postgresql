@@ -177,6 +177,12 @@ postgresql_ssl_renegotiation_limit: 512MB                           # amount of 
 postgresql_ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"    # (>= 9.2)
 postgresql_ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"   # (>= 9.2)
 postgresql_ssl_ca_file: ""                                          # (>= 9.2)
+# Local copies of the TLS files. When a *_src variable is set, the role uploads
+# the file to the matching postgresql_ssl_*_file path and restarts PostgreSQL
+# when the file changed. Leave it empty when the file is already on the host.
+postgresql_ssl_cert_file_src: ""
+postgresql_ssl_key_file_src: ""
+postgresql_ssl_ca_file_src: ""
 postgresql_ssl_crl_file: ""                                         # (>= 9.2)
 postgresql_ssl_crl_dir: ""                                         # (>= 14)
 
