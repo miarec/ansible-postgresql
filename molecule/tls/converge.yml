@@ -11,8 +11,8 @@
     postgresql_ssl_cert_file: /etc/postgresql/tls/server.crt
     postgresql_ssl_key_file: /etc/postgresql/tls/server.key
     postgresql_ssl_ca_file: /etc/postgresql/tls/ca.crt
-    # The role uploads the server files from the control machine (see prepare.yml)
-    tls_src_dir: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/tls"
+    # The role uploads the server files from the control machine, where
+    # prepare.yml generates them. tls_src_dir is defined in molecule.yml.
     postgresql_ssl_cert_file_src: "{{ tls_src_dir }}/server.crt"
     postgresql_ssl_key_file_src: "{{ tls_src_dir }}/server.key"
     postgresql_ssl_ca_file_src: "{{ tls_src_dir }}/ca.crt"

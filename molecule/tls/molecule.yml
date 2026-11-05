@@ -17,6 +17,13 @@ provisioner:
   name: ansible
   playbooks:
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}
+  inventory:
+    group_vars:
+      all:
+        # Where prepare.yml generates the test certificates on the control
+        # machine, and where converge.yml uploads them from. Inventory group
+        # vars reach every play, including the one that targets localhost.
+        tls_src_dir: ${MOLECULE_EPHEMERAL_DIRECTORY}/tls
   env:
     # Accepts: 12, 13, 14, 15, 16, 17
     POSTGRESQL_VERSION: ${MOLECULE_POSTGRESQL_VERSION:-17}

@@ -1,140 +1,56 @@
 ---
-- name: Prepare TLS certificates
+# The TLS fixtures are split between the control machine and the target.
+#
+# Control machine (first play):
+#   Generates a test CA, a server certificate, a client certificate, and a
+#   self-signed client certificate in `tls_src_dir`, defined once in
+#   molecule.yml. The CA private key stays here.
+#
+# Target (second play):
+#   Uploads the client files that the verify tests pass to psql into
+#   /root/tls-client. That directory belongs to the test, not to the role.
+#
+# Nothing in prepare writes to /etc/postgresql/tls. The role creates that
+# directory and uploads the server certificate, the server key, and the CA
+# certificate from `tls_src_dir` during converge, the same way the production
+# playbooks do. A passing test therefore proves the role's upload, not the
+# fixture's.
+
+- name: Generate TLS certificates on the control machine
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+
+  tasks:
+    - name: Include TLS certificate generation tasks
+      include_tasks: tasks/certificates.yml
+
+- name: Upload the client TLS files for the verify tests
   hosts: all
   become: true
 
-  vars:
-    tls_dir: /etc/postgresql/tls
-    tls_src_dir: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/tls"
-
   tasks:
-    - name: Install OpenSSL
-      package:
-        name: openssl
-        state: present
-
-    - name: Create TLS certificate directory
+    - name: Create the client TLS directory
       file:
-        path: "{{ tls_dir }}"
+        path: /root/tls-client
         state: directory
-        mode: "0755"
+        owner: root
+        group: root
+        mode: "0700"
 
-    - name: Generate CA private key
-      command: openssl genrsa -out {{ tls_dir }}/ca.key 4096
-      args:
-        creates: "{{ tls_dir }}/ca.key"
-
-    - name: Generate CA certificate
-      command: >
-        openssl req -x509 -new -nodes
-        -key {{ tls_dir }}/ca.key
-        -sha256 -days 365
-        -out {{ tls_dir }}/ca.crt
-        -subj "/CN=PostgreSQL-Test-CA"
-      args:
-        creates: "{{ tls_dir }}/ca.crt"
-
-    - name: Generate server private key
-      command: openssl genrsa -out {{ tls_dir }}/server.key 2048
-      args:
-        creates: "{{ tls_dir }}/server.key"
-
-    - name: Generate server CSR
-      command: >
-        openssl req -new
-        -key {{ tls_dir }}/server.key
-        -out {{ tls_dir }}/server.csr
-        -subj "/CN=localhost"
-      args:
-        creates: "{{ tls_dir }}/server.csr"
-
-    - name: Sign server certificate with CA
-      command: >
-        openssl x509 -req
-        -in {{ tls_dir }}/server.csr
-        -CA {{ tls_dir }}/ca.crt
-        -CAkey {{ tls_dir }}/ca.key
-        -CAcreateserial
-        -out {{ tls_dir }}/server.crt
-        -days 365 -sha256
-      args:
-        creates: "{{ tls_dir }}/server.crt"
-
-    - name: Generate client private key
-      command: openssl genrsa -out {{ tls_dir }}/client.key 2048
-      args:
-        creates: "{{ tls_dir }}/client.key"
-
-    - name: Generate client CSR
-      command: >
-        openssl req -new
-        -key {{ tls_dir }}/client.key
-        -out {{ tls_dir }}/client.csr
-        -subj "/CN=postgres-client"
-      args:
-        creates: "{{ tls_dir }}/client.csr"
-
-    - name: Sign client certificate with CA
-      command: >
-        openssl x509 -req
-        -in {{ tls_dir }}/client.csr
-        -CA {{ tls_dir }}/ca.crt
-        -CAkey {{ tls_dir }}/ca.key
-        -CAcreateserial
-        -out {{ tls_dir }}/client.crt
-        -days 365 -sha256
-      args:
-        creates: "{{ tls_dir }}/client.crt"
-
-    - name: Generate invalid client private key (self-signed, not CA-signed)
-      command: openssl genrsa -out {{ tls_dir }}/invalid-client.key 2048
-      args:
-        creates: "{{ tls_dir }}/invalid-client.key"
-
-    - name: Generate invalid client certificate (self-signed, not CA-signed)
-      command: >
-        openssl req -x509 -new -nodes
-        -key {{ tls_dir }}/invalid-client.key
-        -sha256 -days 365
-        -out {{ tls_dir }}/invalid-client.crt
-        -subj "/CN=invalid-client"
-      args:
-        creates: "{{ tls_dir }}/invalid-client.crt"
-
-    - name: Set proper permissions on CA key
-      file:
-        path: "{{ tls_dir }}/ca.key"
-        mode: "0600"
-
-    - name: Set proper permissions on client keys
-      file:
-        path: "{{ item }}"
-        mode: "0600"
+    # psql runs as root in verify. libpq requires a private key owned by the
+    # current user to have mode 0600.
+    - name: Upload the client certificates and keys
+      copy:
+        src: "{{ tls_src_dir }}/{{ item.name }}"
+        dest: "/root/tls-client/{{ item.name }}"
+        owner: root
+        group: root
+        mode: "{{ item.mode }}"
       loop:
-        - "{{ tls_dir }}/client.key"
-        - "{{ tls_dir }}/invalid-client.key"
-
-    - name: Set proper permissions on certificates
-      file:
-        path: "{{ item }}"
-        mode: "0644"
-      loop:
-        - "{{ tls_dir }}/ca.crt"
-        - "{{ tls_dir }}/server.crt"
-        - "{{ tls_dir }}/client.crt"
-        - "{{ tls_dir }}/invalid-client.crt"
-
-    # The role uploads these files from the control machine, like the
-    # production playbooks do. Move them off the host, so the test proves it.
-    - name: Fetch the TLS files that the role uploads
-      fetch:
-        src: "{{ tls_dir }}/{{ item }}"
-        dest: "{{ tls_src_dir }}/"
-        flat: true
-      loop: [ca.crt, server.crt, server.key]
-
-    - name: Remove the fetched TLS files from the host
-      file:
-        path: "{{ tls_dir }}/{{ item }}"
-        state: absent
-      loop: [ca.crt, server.crt, server.key]
+        - { name: ca.crt, mode: "0644" }
+        - { name: client.crt, mode: "0644" }
+        - { name: client.key, mode: "0600" }
+        - { name: invalid-client.crt, mode: "0644" }
+        - { name: invalid-client.key, mode: "0600" }
