@@ -20,8 +20,9 @@ uv run molecule converge
 uv run molecule verify
 uv run molecule destroy
 
-# Run ansible-lint
+# Run the linters
 uv run ansible-lint
+uv run yamllint .
 ```
 
 Valid `MOLECULE_DISTRO` values: `ubuntu2204`, `ubuntu2404`, `rockylinux9`, `rhel9`
@@ -33,8 +34,9 @@ Valid `MOLECULE_DISTRO` values: `ubuntu2204`, `ubuntu2404`, `rockylinux9`, `rhel
 2. Load PostgreSQL version-specific variables from `vars/postgresql_*.yml`
 3. Install PostgreSQL (platform-specific: `install_apt.yml`, `install_rhel.yml`, `install_fedora.yml`)
 4. Install extensions and foreign data wrappers
-5. Configure PostgreSQL (`configure.yml` - generates `postgresql.conf`, `pg_hba.conf`, `pg_ident.conf`)
-6. Create users, databases, schemas, and apply privileges
+5. When `postgresql_ssl` is on, upload the TLS files whose `*_src` variable is set (`tls_upload.yml`), then fail the play if the service user can't read a TLS file in use (`tls_verify.yml`)
+6. Configure PostgreSQL (`configure.yml` - generates `postgresql.conf`, `pg_hba.conf`, `pg_ident.conf`)
+7. Create users, databases, schemas, and apply privileges
 
 **Key configuration files generated:**
 - `postgresql.conf` from `templates/postgresql.conf.j2`
