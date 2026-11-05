@@ -1,4 +1,4 @@
-# file: postgresql/tasks/tls.yml
+# file: postgresql/tasks/tls_upload.yml
 #
 # Upload the TLS files from the Ansible control machine. A file is uploaded
 # when its postgresql_ssl_*_src variable is set. Leave the variable empty when
@@ -7,6 +7,14 @@
 # All files are owned by root. Certificates are world readable (0644). The
 # private key is readable by root and the PostgreSQL service group only (0640).
 # PostgreSQL accepts a key owned by root when its mode is 0640 or stricter.
+#
+# The role sets permissions only on the files it uploads. A file that is
+# already on the host, because its *_src variable is empty, is left as is.
+# A missing parent directory is created as 0755 root:root, regardless of the
+# umask, so the service user can traverse it. An existing directory is never
+# changed, because it may be shared with other services, such as
+# /etc/ssl/certs or /etc/ssl/private. tls_verify.yml checks afterwards that
+# the service user can read every file, uploaded or not.
 
 - name: PostgreSQL | Upload TLS files
   vars:
@@ -19,14 +27,20 @@
         ] | selectattr('src') | list
       }}
   block:
-    - name: PostgreSQL | Create TLS directories
+    - name: PostgreSQL | Check which TLS directories exist
+      stat:
+        path: "{{ item }}"
+      loop: "{{ _postgresql_tls_files | map(attribute='dest') | map('dirname') | unique | list }}"
+      register: _postgresql_tls_dirs
+
+    - name: PostgreSQL | Create missing TLS directories
       file:
         path: "{{ item }}"
         state: directory
         owner: root
-        group: "{{ postgresql_service_group }}"
-        mode: "0750"
-      loop: "{{ _postgresql_tls_files | map(attribute='dest') | map('dirname') | unique | list }}"
+        group: root
+        mode: "0755"
+      loop: "{{ _postgresql_tls_dirs.results | rejectattr('stat.exists') | map(attribute='item') | list }}"
 
     - name: PostgreSQL | Upload TLS certificates and private key
       copy:
