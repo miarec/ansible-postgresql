@@ -10,6 +10,10 @@ requires-python = ">=3.10"
 # - ansible-core 2.17+ requires Python 3.7+ on managed nodes
 # - The dnf module needs python3-dnf bindings (only available for system Python)
 # This allows testing all distros (including EL8) with the same command.
+#
+# ansible-core 2.16 doesn't run on Python 3.14, and ansible-lint refuses to
+# start with that pair. .python-version pins the interpreter uv picks, both
+# locally and on the CI runners, which otherwise take the newest Python.
 dev = [
     "ansible>=9.0,<10.0",
     "ansible-lint>=24.0",
