@@ -45,6 +45,16 @@
 - import_tasks: fdw.yml
   tags: [postgresql, postgresql-fdw]
 
+# Upload the TLS files whose *_src variable is set, then check that the
+# service user can read every TLS file in use, before ssl = on is written.
+- import_tasks: tls_upload.yml
+  when: postgresql_ssl | bool
+  tags: [postgresql, postgresql-configure]
+
+- import_tasks: tls_verify.yml
+  when: postgresql_ssl | bool
+  tags: [postgresql, postgresql-configure]
+
 - import_tasks: configure.yml
   tags: [postgresql, postgresql-configure]
 
