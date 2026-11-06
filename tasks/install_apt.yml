@@ -13,6 +13,11 @@
     dest: "/etc/apt/trusted.gpg.d/{{ postgresql_apt_key_id }}.asc"
     mode: '0644'
     force: true
+  register: postgresql_apt_key
+  # Some addresses of www.postgresql.org time out at times.
+  until: postgresql_apt_key is succeeded
+  retries: 5
+  delay: 10
   when: postgresql_apt_key_url and postgresql_apt_key_id and postgresql_install_repository
 
 # - name: PostgreSQL | Add PostgreSQL repository apt-key | apt
