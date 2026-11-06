@@ -34,7 +34,7 @@
           name: epel
           description: EPEL
           baseurl: "https://dl.fedoraproject.org/pub/archive/epel/7/x86_64/"
-          gpgkey: "http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_facts['distribution_major_version'] }}"
+          gpgkey: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_facts['distribution_major_version'] }}"
           enabled: yes
         when:
           - ansible_facts['distribution'] == "RedHat"
